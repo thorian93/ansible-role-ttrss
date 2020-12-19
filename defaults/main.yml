@@ -1,9 +1,9 @@
 ---
 ttrss_stable_os:
- - Debian 9
- - Debian 10
- - Ubuntu 18
- - Ubuntu 20
+  - Debian 9
+  - Debian 10
+  - Ubuntu 18
+  - Ubuntu 20
 
 ttrss_create_self_signed_cert: true
 ttrss_redirect_http_to_https: true

@@ -23,6 +23,7 @@
 - name: "Clone TTRSS Master Branch."
   git:
     repo: https://tt-rss.org/git/tt-rss.git
+    version: master
     dest: "{{ ttrss_web_dir }}"
     force: 'yes'
 
@@ -91,7 +92,7 @@
     owner: root
     group: root
     mode: 0644
-    backup: yes
+    backup: 'yes'
   notify: reload webserver
 
 - name: "Create self-signed Certificate."
