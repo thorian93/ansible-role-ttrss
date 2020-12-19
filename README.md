@@ -2,9 +2,9 @@
 
 This role installs TinyTinyRSS on Debian and Ubuntu servers.
 
-[![Ansible Role: TTRSS](https://img.shields.io/ansible/role/ID?style=flat-square)](https://galaxy.ansible.com/thorian93/ansible_role_ttrss)
-[![Ansible Role: TTRSS](https://img.shields.io/ansible/quality/ID?style=flat-square)](https://galaxy.ansible.com/thorian93/ansible_role_ttrss)
-[![Ansible Role: TTRSS](https://img.shields.io/ansible/role/d/ID?style=flat-square)](https://galaxy.ansible.com/thorian93/ansible_role_ttrss)
+[![Ansible Role: TTRSS](https://img.shields.io/ansible/role/52408?style=flat-square)](https://galaxy.ansible.com/thorian93/ansible_role_ttrss)
+[![Ansible Role: TTRSS](https://img.shields.io/ansible/quality/52408?style=flat-square)](https://galaxy.ansible.com/thorian93/ansible_role_ttrss)
+[![Ansible Role: TTRSS](https://img.shields.io/ansible/role/d/52408?style=flat-square)](https://galaxy.ansible.com/thorian93/ansible_role_ttrss)
 
 ## Known issues
 
