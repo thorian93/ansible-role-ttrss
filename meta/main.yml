@@ -1,0 +1,35 @@
+---
+galaxy_info:
+  author: Thorian93
+  description: Ansible Role Tiny Tiny RSS
+  license: "license (MIT)"
+
+  min_ansible_version: 2.9
+
+  galaxy_tags:
+    - linux
+    - server
+    - web
+    - ttrss
+    - tinytinyrss
+    - feedreader
+
+  platforms:
+    - name: Debian
+      versions:
+        - Stretch
+        - Buster
+    - name: Ubuntu
+      versions:
+        - Bionic
+        - Focal
+
+dependencies:
+  - name: thorian93.ansible_role_apache2
+    version: master
+  - name: thorian93.ansible_role_php
+    version: master
+  - name: thorian93.ansible_role_mysql
+    version: master
+  - name: ansible-role-supervisor
+    version: master

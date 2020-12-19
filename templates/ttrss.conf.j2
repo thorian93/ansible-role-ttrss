@@ -1,0 +1,53 @@
+# {{  ansible_managed  }}
+<VirtualHost *:80>
+ ServerName "{{ ttrss_external_url }}"
+ ServerSignature Off
+ DocumentRoot {{ ttrss_web_dir }}
+
+ <Directory {{ ttrss_web_dir }}>
+  Options +FollowSymlinks
+  AllowOverride All
+ </Directory>
+
+{% if ttrss_redirect_http_to_https %}
+ RewriteEngine on
+ RewriteCond %{HTTPS} !=on
+ RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [NE,R,L]
+{% endif %}
+</VirtualHost>
+
+<VirtualHost *:443>
+ SSLEngine on
+ SSLProtocol all -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+ SSLHonorCipherOrder on
+ SSLCipherSuite "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"
+ SSLCompression Off
+ # Not suported yet: SSLSessionTickets Off
+{% if ttrss_create_self_signed_cert %}
+ SSLCertificateFile "{{ ttrss_self_signed_certificate }}"
+ SSLCertificateKeyFile "{{ ttrss_self_signed_certificate_key }}"
+{% elif ttrss_custom_cert %}
+ SSLCertificateFile "{{ ttrss_custom_cert_file }}"
+ SSLCertificateKeyFile "{{ ttrss_custom_cert_key }}"
+{% else %}
+ SSLCertificateFile "{{ ttrss_certificate }}"
+ SSLCertificateKeyFile "{{ ttrss_certificate_key }}"
+ SSLCACertificateFile "{{ ttrss_certificate_chain }}"
+{% endif %}
+
+ # Use HSTS:
+ <IfModule mod_headers.c>
+   Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains; preload"
+ </IfModule>
+
+ ServerName "{{ ttrss_external_url }}"
+ ServerSignature Off
+ DocumentRoot {{ ttrss_web_dir }}
+
+ LogFormat "%{X-Forwarded-For}i %l %u %t \"%r\" %>s %b" common_forwarded
+ ErrorLog /var/log/{{ apache2_http_name }}/ttrss_error.log
+ CustomLog /var/log/{{ apache2_http_name }}/ttrss_forwarded.log common_forwarded
+ CustomLog /var/log/{{ apache2_http_name }}/ttrss_access.log combined env=!dontlog
+ CustomLog /var/log/{{ apache2_http_name }}/ttrss.log combined
+
+</VirtualHost>

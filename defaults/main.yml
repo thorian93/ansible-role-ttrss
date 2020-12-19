@@ -1,0 +1,41 @@
+---
+ttrss_stable_os:
+ - Debian 9
+ - Debian 10
+ - Ubuntu 18
+ - Ubuntu 20
+
+ttrss_create_self_signed_cert: true
+ttrss_redirect_http_to_https: true
+
+ttrss_apache_modules:
+  - ssl
+  - rewrite
+  - headers
+
+ttrss_web_dir: /var/www/ttrss
+
+ttrss_database_name: ttrss
+mysql_ttrss_user: ttrss
+mysql_ttrss_pw: ttrss
+
+ttrss_self_signed_cert_subj: "/C=DE/ST=NRW/L=Cologne/O=TTRSS/CN={{ ttrss_external_url }}"
+ttrss_self_signed_certificate_key: "/etc/{{ apache2_http_name }}/ssl/ttrss.key"
+ttrss_self_signed_certificate: "/etc/{{ apache2_http_name }}/ssl/ttrss.crt"
+
+ttrss_custom_cert: false
+ttrss_custom_cert_file: /etc/{{ apache2_http_name }}/ssl/ttrss.crt
+ttrss_custom_cert_key: /etc/{{ apache2_http_name }}/ssl/ttrss.key
+
+supervisor_programs:
+  - name: 'ttrss-update'
+    command: php {{ ttrss_web_dir }}/update_daemon2.php
+    state: present
+    configuration: |
+      autostart=true
+      autorestart=true
+      numprocs=1
+      redirect_stderr=true
+      stderr_logfile=/var/log/apache-err.log
+      stdout_logfile={{ ttrss_web_dir }}/supervisord.log
+      user={{ apache2_http_user }}

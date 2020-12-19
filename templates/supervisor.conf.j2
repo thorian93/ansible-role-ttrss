@@ -1,0 +1,9 @@
+[program:ttrss-update]
+process_name=%(program_name)s_%(process_num)02d
+command=php {{ ttrss_web_dir }}/update_daemon2.php
+autostart=true
+autorestart=true
+user={{ apache2_http_user }}
+numprocs=1
+redirect_stderr=true
+stdout_logfile={{ ttrss_web_dir }}/supervisord.log

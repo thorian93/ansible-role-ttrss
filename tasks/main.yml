@@ -1,0 +1,112 @@
+---
+- name: "Preflight - Fail if target host is not stable for this Role."
+  fail:
+    msg: "This role is not stable for the target operating system, {{ ansible_distribution }} {{ ansible_distribution_major_version }}."
+  when: (ansible_distribution is not defined) or
+        (ansible_distribution_version is not defined) or
+        (ansible_distribution+" "+ansible_distribution_major_version not in ttrss_stable_os)
+
+- name: "Include OS Family specific Variables."
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: "Run Certbot Role conditionally."
+  include_role:
+    name: thorian93.ansible_role_certbot
+  when: not ttrss_create_self_signed_cert | bool
+
+- name: "Install Prerequisites."
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ ttrss_prerequisites }}"
+
+- name: "Clone TTRSS Master Branch."
+  git:
+    repo: https://tt-rss.org/git/tt-rss.git
+    dest: "{{ ttrss_web_dir }}"
+    force: 'yes'
+
+- name: "Update Permissions on Installation Directory."
+  file:
+    path: "{{ ttrss_web_dir }}"
+    owner: "{{ apache2_http_user }}"
+    group: "{{ apache2_http_user }}"
+    mode: 0750
+    state: directory
+
+- name: "Update Permissions on Cache Directories."
+  file:
+    path: "{{ ttrss_web_dir }}/{{ item }}"
+    owner: "{{ apache2_http_user }}"
+    group: "{{ apache2_http_user }}"
+    mode: 0770
+    setype: httpd_sys_rw_content_t
+    recurse: 'yes'
+    state: directory
+  with_items:
+    - cache
+    - feed-icons
+    - lock
+
+- name: "Create TTRSS database."
+  mysql_db:
+    login_user: "{{ mysql_root_user }}"
+    login_password: "{{ mysql_root_pw }}"
+    login_unix_socket: "{{ mysql_unix_socket }}"
+    name: "{{ ttrss_database_name }}"
+    state: present
+
+- name: "Create TTRSS database user."
+  mysql_user:
+    login_user: "{{ mysql_root_user }}"
+    login_password: "{{ mysql_root_pw }}"
+    login_unix_socket: "{{ mysql_unix_socket }}"
+    host_all: 'no'
+    name: "{{ mysql_ttrss_user }}"
+    password: "{{ mysql_ttrss_pw }}"
+    priv: "ttrss.*:ALL,GRANT"
+    append_privs: 'no'
+
+- name: "Copy TTRSS Supervisor Script."
+  template:
+    src: supervisor.conf.j2
+    dest: /etc/supervisor/conf.d/ttrss.conf
+    owner: root
+    group: root
+    mode: 0700
+    backup: 'yes'
+  notify: restart supervisor
+
+- name: "Enable Apache2 Modules."
+  apache2_module:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ ttrss_apache_modules }}"
+  notify: restart webserver
+
+- name: "Copy TTRSS Apache2 Configuration."
+  template:
+    src: ttrss.conf.j2
+    dest: "{{ apache2_http_site_dir }}/ttrss.conf"
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify: reload webserver
+
+- name: "Create self-signed Certificate."
+  command: 'openssl req -new -nodes -x509 -subj "{{ttrss_self_signed_cert_subj}}" -days 365 -keyout {{ttrss_self_signed_certificate_key}} -out {{ttrss_self_signed_certificate}} -extensions v3_ca'
+  args:
+    creates: "{{ ttrss_self_signed_certificate }}"
+  when: ttrss_create_self_signed_cert | bool
+
+- name: "Enable TTRSS Apache2 Configuration."
+  command: a2ensite ttrss.conf
+  args:
+    creates: "/etc/apache2/sites-enabled/ttrss.conf"
+  notify: reload webserver
+  when: ansible_os_family == "Debian"
+
+- name: "Installation completed."
+  debug:
+    msg: "The main installation succeeded. You now need to install your TTRSS instance manually at: {{ ttrss_external_url }}"
