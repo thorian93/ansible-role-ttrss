@@ -31,5 +31,5 @@ dependencies:
     version: master
   - name: thorian93.ansible_role_mysql
     version: master
-  - name: ansible-role-supervisor
+  - name: thorian93.ansible_role_supervisor
     version: master
