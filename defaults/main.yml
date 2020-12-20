@@ -27,6 +27,10 @@ ttrss_custom_cert: false
 ttrss_custom_cert_file: /etc/{{ apache2_http_name }}/ssl/ttrss.crt
 ttrss_custom_cert_key: /etc/{{ apache2_http_name }}/ssl/ttrss.key
 
+ttrss_certificate_key: "{{ certbot_cert_path }}/privkey.pem"
+ttrss_certificate: "{{ certbot_cert_path }}/cert.pem"
+ttrss_certificate_chain: "{{ certbot_cert_path }}/fullchain.pem"
+
 supervisor_programs:
   - name: 'ttrss-update'
     command: php {{ ttrss_web_dir }}/update_daemon2.php
