@@ -9,7 +9,7 @@
   AllowOverride All
  </Directory>
 
-{% if ttrss_redirect_http_to_https %}
+{% if ttrss_redirect_http_to_https | bool %}
  RewriteEngine on
  RewriteCond %{HTTPS} !=on
  RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [NE,R,L]
@@ -23,10 +23,10 @@
  SSLCipherSuite "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"
  SSLCompression Off
  # Not suported yet: SSLSessionTickets Off
-{% if ttrss_create_self_signed_cert %}
+{% if ttrss_create_self_signed_cert | bool %}
  SSLCertificateFile "{{ ttrss_self_signed_certificate }}"
  SSLCertificateKeyFile "{{ ttrss_self_signed_certificate_key }}"
-{% elif ttrss_custom_cert %}
+{% elif ttrss_custom_cert | bool %}
  SSLCertificateFile "{{ ttrss_custom_cert_file }}"
  SSLCertificateKeyFile "{{ ttrss_custom_cert_key }}"
 {% else %}
