@@ -2,9 +2,9 @@
 
 This role installs TinyTinyRSS on Debian and Ubuntu servers.
 
-[![Ansible Role: TTRSS](https://img.shields.io/ansible/role/52408?style=flat-square)](https://galaxy.ansible.com/thorian93/ansible_role_ttrss)
-[![Ansible Role: TTRSS](https://img.shields.io/ansible/quality/52408?style=flat-square)](https://galaxy.ansible.com/thorian93/ansible_role_ttrss)
-[![Ansible Role: TTRSS](https://img.shields.io/ansible/role/d/52408?style=flat-square)](https://galaxy.ansible.com/thorian93/ansible_role_ttrss)
+[![Ansible Role: TTRSS](https://img.shields.io/ansible/role/55147?style=flat-square)](https://galaxy.ansible.com/thorian93/ttrss)
+[![Ansible Role: TTRSS](https://img.shields.io/ansible/quality/55147?style=flat-square)](https://galaxy.ansible.com/thorian93/ttrss)
+[![Ansible Role: TTRSS](https://img.shields.io/ansible/role/d/55147?style=flat-square)](https://galaxy.ansible.com/thorian93/ttrss)
 
 ## Known issues
 
@@ -94,10 +94,10 @@ List the apps which should be enabled.
 
 ## Dependencies
 
-  - [thorian93.ansible-role-apache2](https://galaxy.ansible.com/thorian93/ansible_role_apache2)
+  - [thorian93.ansible-role-apache2](https://galaxy.ansible.com/thorian93/apache2)
   - [thorian93.ansible-role-php](https://galaxy.ansible.com/thorian93/ansible_role_ttrss)
-  - [thorian93.ansible-role-certbot](https://galaxy.ansible.com/thorian93/ansible_role_certbot) - when no custom or self signed certificate is used
-  - [thorian93.ansible-role-mysql](https://galaxy.ansible.com/thorian93/ansible_role_mysql)
+  - [thorian93.ansible-role-certbot](https://galaxy.ansible.com/thorian93/certbot) - when no custom or self signed certificate is used
+  - [thorian93.ansible-role-mysql](https://galaxy.ansible.com/thorian93/mysql)
 
 ## OS Compatibility
 
